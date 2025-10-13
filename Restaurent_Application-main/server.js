@@ -1,38 +1,21 @@
-const http = require('http');
-const fs = require('fs');
+const express = require('express');
 const path = require('path');
+const app = express();
 const port = process.env.PORT || 3000;
 
-const mimeTypes = {
-  '.html': 'text/html',
-  '.js': 'text/javascript',
-  '.css': 'text/css',
-  '.json': 'application/json',
-  '.png': 'image/png',
-  '.jpg': 'image/jpg',
-  '.gif': 'image/gif',
-  '.ico': 'image/x-icon'
-};
+// Serve static files from Angular dist folder
+app.use(express.static(path.join(__dirname, 'dist/restaurent-app'), {
+  index: false // Don't serve index.html for static files
+}));
 
-const server = http.createServer((req, res) => {
-  let filePath = path.join(__dirname, 'dist/restaurent-app', req.url === '/' ? 'index.html' : req.url);
-  const ext = path.extname(filePath);
-  const contentType = mimeTypes[ext] || 'application/octet-stream';
+// API routes (if you have any) would go here
 
-  fs.readFile(filePath, (err, content) => {
-    if (err) {
-      // If file not found, serve index.html for SPA routing
-      fs.readFile(path.join(__dirname, 'dist/restaurent-app/index.html'), (err, content) => {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(content, 'utf-8');
-      });
-    } else {
-      res.writeHead(200, { 'Content-Type': contentType });
-      res.end(content, 'utf-8');
-    }
-  });
+// Handle ALL other routes by serving index.html (Angular SPA routing)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist/restaurent-app/index.html'));
 });
 
-server.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+app.listen(port, () => {
+  console.log(`Angular app running on port ${port}`);
+  console.log(`Serving from: ${path.join(__dirname, 'dist/restaurent-app')}`);
 });
