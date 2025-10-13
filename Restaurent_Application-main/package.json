@@ -12,7 +12,7 @@
     "build:dev": "ng build --configuration development",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:prod": "npx http-server dist/restaurent-app -p $PORT"
+    "serve:prod": "npx http-server dist/RestaurentApp -p $PORT"
   },
   "private": true,
   "dependencies": {
